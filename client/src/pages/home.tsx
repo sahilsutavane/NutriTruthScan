@@ -13,13 +13,15 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-4xl font-bold mb-2">PureCheck</h1>
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          NutriTrust
+        </h1>
         <p className="text-muted-foreground">
           Scan food & cosmetic products to check their ingredients
         </p>
       </div>
 
-      <Card className="bg-primary/5 border-primary/10">
+      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/10">
         <CardHeader className="space-y-1">
           <CardTitle>Start Scanning</CardTitle>
           <CardDescription>
@@ -28,7 +30,7 @@ export default function Home() {
         </CardHeader>
         <CardContent>
           <Link href="/scan">
-            <Button className="w-full">
+            <Button className="w-full bg-primary hover:bg-primary/90">
               <Scan className="mr-2 h-4 w-4" />
               Open Scanner
             </Button>
@@ -40,7 +42,7 @@ export default function Home() {
         <h2 className="text-xl font-semibold">Recent Scans</h2>
         {products?.slice(0, 5).map((product) => (
           <Link key={product.id} href={`/product/${product.barcode}`}>
-            <Card className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <Card className="cursor-pointer hover:bg-primary/5 transition-colors">
               <CardHeader>
                 <CardTitle className="text-lg">{product.name}</CardTitle>
                 <CardDescription>{product.brand}</CardDescription>
