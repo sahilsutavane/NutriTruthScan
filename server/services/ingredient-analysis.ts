@@ -40,3 +40,14 @@ Ingredients: ${ingredients}`;
     };
   }
 }
+
+//This file needs to be created in the ../config directory
+//To resolve the original error
+//This is a minimal example, replace with your actual configuration.
+//Place this file in a directory named 'config' at the same level as the 'services' directory.
+//The file should be named config.ts
+
+//config.ts
+export const config = {
+  GOOGLE_API_KEY: "YOUR_GOOGLE_API_KEY" // Replace with your actual API key
+};
