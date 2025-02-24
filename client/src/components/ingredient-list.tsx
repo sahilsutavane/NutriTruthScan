@@ -1,6 +1,5 @@
 import { ChevronDown, Star, Heart, Flag, Trash2, Info } from 'lucide-react';
 import type { Product } from '@shared/schema';
-import { SafetyMeter } from './safety-meter';
 
 interface Props {
   product: Product;
@@ -9,11 +8,6 @@ interface Props {
 export function IngredientList({ product }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
-      {/* Safety Meter */}
-      <div className="flex flex-col items-center justify-center py-8">
-        <SafetyMeter score={product.analysis.foodScore} size="lg" />
-      </div>
-
       {/* Product Image & Size */}
       <div className="flex flex-col items-center gap-2">
         <div className="w-48 h-48 bg-white/5 rounded-xl flex items-center justify-center">
