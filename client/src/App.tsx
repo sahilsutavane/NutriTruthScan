@@ -13,7 +13,8 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/" component={Scan} />
+        <Route path="/home" component={Home} />
         <Route path="/scan" component={Scan} />
         <Route path="/product/:barcode" component={Product} />
         <Route path="/preferences" component={Preferences} />
