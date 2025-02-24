@@ -11,10 +11,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/products/barcode/:barcode", async (req, res) => {
-    const product = await storage.getProductByBarcode(req.params.barcode);
+    let product = await storage.getProductByBarcode(req.params.barcode);
+    
     if (!product) {
-      res.status(404).json({ message: "Product not found" });
-      return;
+      // Try getting product info from Gemini
+      const geminiProduct = await getProductDetailsFromGemini(req.params.barcode);
+      if (geminiProduct) {
+        // Save the product to our database
+        product = await storage.createProduct(geminiProduct);
+      } else {
+        res.status(404).json({ message: "Product not found" });
+        return;
+      }
     }
     res.json(product);
   });
