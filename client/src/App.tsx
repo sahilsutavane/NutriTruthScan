@@ -30,12 +30,14 @@ import { ChatBot } from './components/chat-bot';
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <LogoAnimation /> {/* Placeholder for logo animation */}
-      <Router />
-      <Toaster />
-    </QueryClientProvider>
-    <ChatBot />
+    <>
+      <QueryClientProvider client={queryClient}>
+        <LogoAnimation /> {/* Placeholder for logo animation */}
+        <Router />
+        <Toaster />
+      </QueryClientProvider>
+      <ChatBot />
+    </>
   );
 }
 
