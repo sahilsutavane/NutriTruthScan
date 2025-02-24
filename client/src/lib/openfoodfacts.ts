@@ -1,10 +1,10 @@
 import type { Product } from "@shared/schema";
 
-const API_BASE_URL = "https://world.openfoodfacts.org/api/v2";
+const API_BASE_URL = "https://world.openfoodfacts.org/api/v0";
 
 export async function searchProductByBarcode(barcode: string): Promise<Product | null> {
   try {
-    const response = await fetch(`${API_BASE_URL}/product/${barcode}`);
+    const response = await fetch(`${API_BASE_URL}/product/${barcode}.json`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -21,9 +21,9 @@ export async function searchProductByBarcode(barcode: string): Promise<Product |
       name: data.product.product_name || "Unknown Product",
       brand: data.product.brands || "Unknown Brand",
       category: data.product.categories_tags?.[0] || "Other",
-      ingredients: data.product.ingredients_text_en?.split(',').map((i: string) => i.trim()) || [],
+      ingredients: data.product.ingredients_text?.split(',').map((i: string) => i.trim()) || [],
       analysis: {
-        riskLevel: "low", // We'll need to implement proper analysis
+        riskLevel: "low",
         warnings: [],
         goodIngredients: [],
         badIngredients: []
