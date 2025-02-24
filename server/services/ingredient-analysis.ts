@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { config } from "../config";
+import config from "../config";
 
-const genAI = new GoogleGenerativeAI(config.GOOGLE_API_KEY);
+const genAI = new GoogleGenerativeAI(config.apiKey);
 
 export async function analyzeIngredients(ingredients: string) {
   try {
@@ -22,7 +22,6 @@ Ingredients: ${ingredients}`;
     const response = await result.response;
     const text = response.text();
 
-    // Extract JSON from the response by finding content between curly braces
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error("No JSON found in response");
@@ -48,6 +47,6 @@ Ingredients: ${ingredients}`;
 //The file should be named config.ts
 
 //config.ts
-export const config = {
-  GOOGLE_API_KEY: "YOUR_GOOGLE_API_KEY" // Replace with your actual API key
-};
+//export const config = {
+//  GOOGLE_API_KEY: "YOUR_GOOGLE_API_KEY" // Replace with your actual API key
+//};
