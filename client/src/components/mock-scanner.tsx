@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { searchProductByBarcode } from '@/lib/openfoodfacts';
+import { apiRequest } from '@/lib/queryClient';
 
 interface MockScannerProps {
   onScan: (barcode: string) => void;
@@ -12,7 +14,7 @@ export default function MockScanner({ onScan }: MockScannerProps) {
   const timeoutRef = useRef<number>();
   const { toast } = useToast();
 
-  const startScan = () => {
+  const startScan = async () => {
     setIsScanning(true);
     toast({
       title: "Scanning...",
@@ -20,12 +22,28 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     });
 
     // Simulate scanning delay
-    timeoutRef.current = window.setTimeout(() => {
-      setIsScanning(false);
+    timeoutRef.current = window.setTimeout(async () => {
       // For demo, randomly select one of our sample product barcodes
-      const sampleBarcodes = ["123456789", "987654321"];
+      const sampleBarcodes = ["737628064502", "3017620422003", "123456789", "987654321"];
       const randomBarcode = sampleBarcodes[Math.floor(Math.random() * sampleBarcodes.length)];
-      onScan(randomBarcode);
+
+      try {
+        // Try to fetch from Open Food Facts
+        const openFoodFactsProduct = await searchProductByBarcode(randomBarcode);
+
+        if (openFoodFactsProduct) {
+          // Save to our backend
+          await apiRequest('POST', '/api/products', openFoodFactsProduct);
+        }
+
+        setIsScanning(false);
+        onScan(randomBarcode);
+      } catch (error) {
+        console.error('Error processing product:', error);
+        setIsScanning(false);
+        // Fall back to sample products
+        onScan(randomBarcode);
+      }
     }, 2000);
   };
 
