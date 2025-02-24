@@ -24,6 +24,7 @@ export function SafetyMeter({ score, size = 'md', className }: SafetyMeterProps)
 
   return (
     <div className={cn("relative", sizeClasses[size], className)}>
+      {/* Speedometer Background */}
       <svg
         viewBox="0 0 200 200"
         className="w-full h-full transform -rotate-90"
@@ -37,71 +38,44 @@ export function SafetyMeter({ score, size = 'md', className }: SafetyMeterProps)
           </linearGradient>
         </defs>
 
-        {/* Background Circle */}
-        <circle
-          cx="100"
-          cy="100"
-          r="90"
-          fill="white"
-          className="drop-shadow-lg"
+        {/* Meter Background */}
+        <path
+          d="M40 160 A 80 80 0 1 1 160 160"
+          fill="none"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="16"
+          strokeLinecap="round"
         />
 
-        {/* Tick Marks */}
-        {Array.from({ length: 21 }).map((_, i) => {
-          const angle = -90 + (i * 180) / 20;
-          const isLarge = i % 5 === 0;
-          const tickLength = isLarge ? 15 : 10;
-          const x1 = 100 + (70 * Math.cos((angle * Math.PI) / 180));
-          const y1 = 100 + (70 * Math.sin((angle * Math.PI) / 180));
-          const x2 = 100 + ((70 - tickLength) * Math.cos((angle * Math.PI) / 180));
-          const y2 = 100 + ((70 - tickLength) * Math.sin((angle * Math.PI) / 180));
-
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={`url(#meter-gradient)`}
-              strokeWidth={isLarge ? 2 : 1}
-              opacity={0.6}
-            />
-          );
-        })}
-
-        {/* Main Meter Arc */}
+        {/* Colored Meter */}
         <path
           d="M40 160 A 80 80 0 1 1 160 160"
           fill="none"
           stroke="url(#meter-gradient)"
-          strokeWidth="8"
+          strokeWidth="16"
           strokeLinecap="round"
         />
 
         {/* Needle */}
-        <g style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '100px 100px' }}>
-          <line
-            x1="100"
-            y1="100"
-            x2="100"
-            y2="35"
-            stroke="#1a1b1e"
-            strokeWidth="2"
-          />
-          <circle
-            cx="100"
-            cy="100"
-            r="8"
-            fill="#1a1b1e"
-          />
-        </g>
+        <line
+          x1="100"
+          y1="100"
+          x2="100"
+          y2="30"
+          stroke="white"
+          strokeWidth="2"
+          className="origin-bottom transform transition-transform duration-1000"
+          style={{ transform: `rotate(${rotation}deg)` }}
+        />
+
+        {/* Center Point */}
+        <circle cx="100" cy="100" r="8" fill="white" />
       </svg>
 
       {/* Score Display */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
-        <div className="text-2xl font-bold text-[#1a1b1e]">{score}</div>
-        <div className="text-sm text-gray-600">Safety Score</div>
+        <div className="text-2xl font-bold text-white">{score}</div>
+        <div className="text-sm text-white/60">Safety Score</div>
       </div>
     </div>
   );
