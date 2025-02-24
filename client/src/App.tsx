@@ -26,6 +26,8 @@ function Router() {
   );
 }
 
+import { ChatBot } from './components/chat-bot';
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -33,6 +35,7 @@ function App() {
       <Router />
       <Toaster />
     </QueryClientProvider>
+    <ChatBot />
   );
 }
 
