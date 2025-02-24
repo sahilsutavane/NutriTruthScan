@@ -1,49 +1,27 @@
-import { Link, useLocation } from "wouter";
-import { Home, Scan, Settings } from "lucide-react";
+import { Link } from "wouter";
+import { Button } from "./ui/button";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b bg-gradient-to-r from-primary/10 to-primary/5">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/home">
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              NutriTrust
-            </span>
-          </Link>
-        </div>
-      </header>
-
-      <main className="flex-1 container mx-auto px-4 py-6">
-        {children}
-      </main>
-
-      <nav className="fixed bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-around py-2">
-            <Link href="/home">
-              <span className={`p-2 flex flex-col items-center ${location === '/home' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary/80 transition-colors'}`}>
-                <Home className="h-6 w-6" />
-                <span className="text-xs">Home</span>
-              </span>
-            </Link>
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1B1E] to-[#2C2D31]">
+      <header className="border-b border-white/10">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center gap-4">
             <Link href="/">
-              <span className={`p-2 flex flex-col items-center ${location === '/' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary/80 transition-colors'}`}>
-                <Scan className="h-6 w-6" />
-                <span className="text-xs">Scan</span>
-              </span>
+              <span className="text-white font-medium hover:text-white/80 cursor-pointer">Home</span>
+            </Link>
+            <Link href="/scan">
+              <span className="text-white/60 hover:text-white/80 cursor-pointer">Scanner</span>
             </Link>
             <Link href="/preferences">
-              <span className={`p-2 flex flex-col items-center ${location === '/preferences' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-primary/80 transition-colors'}`}>
-                <Settings className="h-6 w-6" />
-                <span className="text-xs">Preferences</span>
-              </span>
+              <span className="text-white/60 hover:text-white/80 cursor-pointer">Preferences</span>
             </Link>
-          </div>
+          </nav>
         </div>
-      </nav>
+      </header>
+      <div className="container mx-auto px-4 py-6">
+        {children}
+      </div>
     </div>
   );
 }
