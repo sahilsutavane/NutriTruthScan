@@ -8,6 +8,8 @@ import Scan from "@/pages/scan";
 import Product from "@/pages/product";
 import Preferences from "@/pages/preferences";
 import NotFound from "@/pages/not-found";
+import React, { useState, useEffect } from 'react';
+import { LogoAnimation } from './components/logo-animation'; // Added import
 
 function Router() {
   return (
@@ -27,6 +29,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <LogoAnimation /> {/* Placeholder for logo animation */}
       <Router />
       <Toaster />
     </QueryClientProvider>
