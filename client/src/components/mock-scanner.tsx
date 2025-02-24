@@ -11,13 +11,35 @@ interface MockScannerProps {
 
 export default function MockScanner({ onScan }: MockScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
+  const [hasCamera, setHasCamera] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReader = useRef<BrowserMultiFormatReader>();
   const { toast } = useToast();
 
+  // Check for camera availability on mount
+  useEffect(() => {
+    checkCameraAvailability();
+  }, []);
+
+  const checkCameraAvailability = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = devices.filter(device => device.kind === 'videoinput');
+      setHasCamera(videoDevices.length > 0);
+    } catch (error) {
+      console.error('Error checking camera:', error);
+      setHasCamera(false);
+    }
+  };
+
   const startScan = async () => {
     try {
       setIsScanning(true);
+
+      if (!hasCamera) {
+        throw new Error('No camera available');
+      }
+
       codeReader.current = new BrowserMultiFormatReader();
       const videoInputDevices = await codeReader.current.listVideoInputDevices();
 
@@ -43,9 +65,13 @@ export default function MockScanner({ onScan }: MockScannerProps) {
               onScan(barcode);
             } catch (error) {
               console.error('Error processing product:', error);
+              toast({
+                title: "Error",
+                description: "Could not process the product. Please try again.",
+                variant: "destructive",
+              });
               setIsScanning(false);
               stopScanning();
-              onScan(barcode);
             }
           }
         }
@@ -53,8 +79,10 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     } catch (error) {
       console.error('Error accessing camera:', error);
       toast({
-        title: "Error",
-        description: "Could not access camera. Please check permissions.",
+        title: "Camera Error",
+        description: hasCamera 
+          ? "Could not access camera. Please check permissions."
+          : "No camera detected. Please use a device with a camera.",
         variant: "destructive",
       });
       setIsScanning(false);
@@ -68,11 +96,30 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     setIsScanning(false);
   };
 
+  // Cleanup on unmount
   useEffect(() => {
-    // Start scanning automatically when component mounts
-    startScan();
-    return () => stopScanning();
+    return () => {
+      if (codeReader.current) {
+        codeReader.current.reset();
+      }
+    };
   }, []);
+
+  // Fallback UI when no camera is available
+  if (hasCamera === false) {
+    return (
+      <div className="relative aspect-[3/4] bg-black/90 rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center">
+        <div className="text-center p-8">
+          <div className="text-red-400 mb-4">
+            No camera detected
+          </div>
+          <p className="text-gray-400 text-sm">
+            Please use a device with a camera to scan products
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative aspect-[3/4] bg-black/90 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
