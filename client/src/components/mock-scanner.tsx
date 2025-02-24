@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { BrowserMultiFormatReader } from '@zxing/library';
 import { searchProductByBarcode } from '@/lib/openfoodfacts';
 import { apiRequest } from '@/lib/queryClient';
-import { BrowserMultiFormatReader } from '@zxing/library';
 
 interface MockScannerProps {
   onScan: (barcode: string) => void;
@@ -27,26 +27,17 @@ export default function MockScanner({ onScan }: MockScannerProps) {
 
       const selectedDeviceId = videoInputDevices[0].deviceId;
 
-      toast({
-        title: "Scanning...",
-        description: "Hold steady while we scan the barcode",
-      });
-
       await codeReader.current.decodeFromVideoDevice(
-        selectedDeviceId, 
-        videoRef.current!, 
+        selectedDeviceId,
+        videoRef.current!,
         async (result) => {
           if (result) {
             const barcode = result.getText();
             try {
-              // Try to fetch from Open Food Facts
               const openFoodFactsProduct = await searchProductByBarcode(barcode);
-
               if (openFoodFactsProduct) {
-                // Save to our backend
                 await apiRequest('POST', '/api/products', openFoodFactsProduct);
               }
-
               setIsScanning(false);
               stopScanning();
               onScan(barcode);
@@ -77,38 +68,42 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     setIsScanning(false);
   };
 
+  useEffect(() => {
+    // Start scanning automatically when component mounts
+    startScan();
+    return () => stopScanning();
+  }, []);
+
   return (
-    <div className="relative w-full aspect-[3/4] bg-black rounded-2xl overflow-hidden shadow-xl">
-      <div className="absolute inset-0 flex items-center justify-center">
+    <div className="relative aspect-[3/4] bg-black/90 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+      <div className="absolute inset-0">
         {isScanning ? (
           <>
-            <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-6 border-2 border-white/30 rounded-xl">
-              <div className="absolute inset-0 border-2 border-primary/50 rounded-xl" />
-              <div className="absolute left-0 right-0 h-0.5 bg-primary top-1/2 -translate-y-1/2 animate-[scan_2s_ease-in-out_infinite]" />
-            </div>
-            <Button 
-              onClick={stopScanning} 
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
-            >
-              Stop Scanning
-            </Button>
-          </>
-        ) : (
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
+            <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover opacity-90" />
+            <div className="absolute inset-8 flex items-center justify-center">
+              <div className="w-full h-full max-w-md border-2 border-primary/30 rounded-3xl relative">
+                <div className="absolute inset-0 border-2 border-primary rounded-3xl opacity-50" />
+                <div className="absolute inset-x-0 h-1 bg-primary/80 top-1/2 -translate-y-1/2 animate-[scan_2s_ease-in-out_infinite]" />
+                <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-primary rounded-tl-3xl" />
+                <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-primary rounded-tr-3xl" />
+                <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-primary rounded-bl-3xl" />
+                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-primary rounded-br-3xl" />
               </div>
             </div>
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+              <Button 
+                onClick={stopScanning} 
+                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur"
+              >
+                Cancel Scan
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
             <Button 
-              onClick={startScan} 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
+              onClick={startScan}
+              className="bg-primary hover:bg-primary/90 text-white shadow-lg"
             >
               Start Scanning
             </Button>

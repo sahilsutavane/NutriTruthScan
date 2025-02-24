@@ -9,15 +9,15 @@ export default function Scan() {
   };
 
   return (
-    <div className="min-h-screen -mt-16 flex flex-col">
-      <div className="flex-1 flex items-center justify-center bg-black/5">
-        <div className="w-full max-w-md mx-4">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              Scan Product
+    <div className="fixed inset-0 bg-gradient-to-b from-[#1A1B1E] to-[#2C2D31] flex flex-col">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="w-full max-w-lg">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-white">
+              Scan Barcode
             </h1>
-            <p className="text-muted-foreground">
-              Position the barcode within the scanner
+            <p className="text-gray-400 mt-2">
+              Position barcode in the center of the frame
             </p>
           </div>
 
