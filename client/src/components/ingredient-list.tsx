@@ -106,15 +106,15 @@ export function IngredientList({ product }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Warnings */}
         {product.analysis.warnings && product.analysis.warnings.length > 0 && (
-          <div className="bg-red-900/20 p-4 rounded-xl space-y-2 border border-red-800/30">
-            <h3 className="font-medium text-red-300 flex items-center">
+          <div className="bg-white p-4 rounded-xl space-y-2 border border-red-300">
+            <h3 className="font-medium text-red-600 flex items-center">
               <AlertTriangle className="w-4 h-4 mr-2" />
               Warnings
             </h3>
             <ul className="space-y-1 text-sm">
               {product.analysis.warnings.map((warning, idx) => (
-                <li key={idx} className="text-white/80 flex items-start">
-                  <span className="mr-2 text-red-400">•</span>
+                <li key={idx} className="text-black flex items-start">
+                  <span className="mr-2 text-red-500">•</span>
                   {warning}
                 </li>
               ))}
@@ -124,15 +124,15 @@ export function IngredientList({ product }: Props) {
         
         {/* Benefits */}
         {product.analysis.goodIngredients && product.analysis.goodIngredients.length > 0 && (
-          <div className="bg-green-900/20 p-4 rounded-xl space-y-2 border border-green-800/30">
-            <h3 className="font-medium text-green-300 flex items-center">
+          <div className="bg-white p-4 rounded-xl space-y-2 border border-green-300">
+            <h3 className="font-medium text-green-600 flex items-center">
               <CheckCircle className="w-4 h-4 mr-2" />
               Benefits
             </h3>
             <ul className="space-y-1 text-sm">
               {product.analysis.goodIngredients.map((benefit, idx) => (
-                <li key={idx} className="text-white/80 flex items-start">
-                  <span className="mr-2 text-green-400">•</span>
+                <li key={idx} className="text-black flex items-start">
+                  <span className="mr-2 text-green-500">•</span>
                   {benefit}
                 </li>
               ))}
@@ -147,12 +147,14 @@ export function IngredientList({ product }: Props) {
           <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">
             Additives
           </h3>
-          <div className="flex flex-wrap gap-2">
-            {product.additives.map((additive) => (
-              <span key={additive} className="px-3 py-1 bg-red-900/30 border border-red-800/20 rounded-full text-sm text-white/90 shadow-sm">
-                {additive}
-              </span>
-            ))}
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex flex-wrap gap-2">
+              {product.additives.map((additive) => (
+                <span key={additive} className="px-3 py-1 bg-white border border-red-400 rounded-full text-sm text-black font-medium shadow-sm">
+                  {additive}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -165,11 +167,11 @@ export function IngredientList({ product }: Props) {
           </h3>
           <div className="space-y-2">
             {Object.entries(product.nutrition).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                <span className="capitalize text-white/80">{key}</span>
-                <div className="flex items-center gap-2 text-white">
+              <div key={key} className="flex items-center justify-between p-3 bg-white rounded-lg hover:bg-white/90 transition-colors">
+                <span className="capitalize text-black font-medium">{key}</span>
+                <div className="flex items-center gap-2 text-black">
                   <span>{value}g</span>
-                  <ChevronDown className="w-4 h-4 text-white/60" />
+                  <ChevronDown className="w-4 h-4 text-black/60" />
                 </div>
               </div>
             ))}
@@ -182,7 +184,7 @@ export function IngredientList({ product }: Props) {
         <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">
           Ingredients
         </h3>
-        <p className="text-white/70 text-sm leading-relaxed bg-white/5 p-4 rounded-lg">
+        <p className="text-black text-sm leading-relaxed bg-white p-4 rounded-lg">
           {product.ingredients.join(", ")}
         </p>
       </div>
