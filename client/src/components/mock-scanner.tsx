@@ -12,6 +12,7 @@ interface MockScannerProps {
 export default function MockScanner({ onScan }: MockScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [hasCamera, setHasCamera] = useState<boolean | null>(null);
+  const [scanningError, setScanningError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReader = useRef<BrowserMultiFormatReader>();
   const { toast } = useToast();
@@ -21,6 +22,13 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     checkCameraAvailability();
   }, []);
 
+  // Start scanning automatically once camera is detected
+  useEffect(() => {
+    if (hasCamera === true && !isScanning && !scanningError) {
+      startScan();
+    }
+  }, [hasCamera, scanningError]);
+
   const checkCameraAvailability = async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -29,12 +37,14 @@ export default function MockScanner({ onScan }: MockScannerProps) {
     } catch (error) {
       console.error('Error checking camera:', error);
       setHasCamera(false);
+      setScanningError('Could not access camera permissions');
     }
   };
 
   const startScan = async () => {
     try {
       setIsScanning(true);
+      setScanningError(null);
 
       if (!hasCamera) {
         throw new Error('No camera available');
@@ -56,13 +66,29 @@ export default function MockScanner({ onScan }: MockScannerProps) {
           if (result) {
             const barcode = result.getText();
             try {
+              // Pause scanning first to prevent multiple scans
+              stopScanning();
+              setIsScanning(false);
+              
+              // Show a loading toast
+              toast({
+                title: "Product found",
+                description: "Loading product information...",
+              });
+              
               const openFoodFactsProduct = await searchProductByBarcode(barcode);
               if (openFoodFactsProduct) {
                 await apiRequest('POST', '/api/products', openFoodFactsProduct);
+                onScan(barcode);
+              } else {
+                toast({
+                  title: "Product Not Found",
+                  description: "This product is not in our database. Please try another product.",
+                  variant: "destructive",
+                });
+                // Restart scanning if product not found
+                setTimeout(startScan, 2000);
               }
-              setIsScanning(false);
-              stopScanning();
-              onScan(barcode);
             } catch (error) {
               console.error('Error processing product:', error);
               toast({
@@ -70,14 +96,19 @@ export default function MockScanner({ onScan }: MockScannerProps) {
                 description: "Could not process the product. Please try again.",
                 variant: "destructive",
               });
-              setIsScanning(false);
-              stopScanning();
+              // Restart scanning after error
+              setTimeout(startScan, 2000);
             }
           }
         }
       );
     } catch (error) {
       console.error('Error accessing camera:', error);
+      setScanningError(hasCamera 
+        ? "Could not access camera. Please check permissions."
+        : "No camera detected. Please use a device with a camera."
+      );
+      
       toast({
         title: "Camera Error",
         description: hasCamera 
@@ -113,9 +144,29 @@ export default function MockScanner({ onScan }: MockScannerProps) {
           <div className="text-red-400 mb-4">
             No camera detected
           </div>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-sm mb-4">
             Please use a device with a camera to scan products
           </p>
+          <Button 
+            onClick={checkCameraAvailability}
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state while checking camera
+  if (hasCamera === null) {
+    return (
+      <div className="relative aspect-[3/4] bg-black/90 rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex items-center justify-center">
+        <div className="text-center p-8">
+          <div className="text-white mb-4">
+            Checking camera...
+          </div>
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
     );
@@ -148,12 +199,26 @@ export default function MockScanner({ onScan }: MockScannerProps) {
           </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <Button 
-              onClick={startScan}
-              className="bg-primary hover:bg-primary/90 text-white shadow-lg"
-            >
-              Start Scanning
-            </Button>
+            {scanningError ? (
+              <div className="text-center p-8">
+                <div className="text-red-400 mb-4">
+                  {scanningError}
+                </div>
+                <Button 
+                  onClick={startScan}
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+                >
+                  Try Again
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                onClick={startScan}
+                className="bg-primary hover:bg-primary/90 text-white shadow-lg"
+              >
+                Start Scanning
+              </Button>
+            )}
           </div>
         )}
       </div>

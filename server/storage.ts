@@ -86,12 +86,19 @@ export class MemStorage implements IStorage {
         name: "Natural Moisturizer",
         brand: "PureBeauty",
         category: "Cosmetics",
-        ingredients: ["Aqua", "Glycerin", "Aloe Vera", "Vitamin E"],
+        size: "250ml",
+        imageUrl: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3",
+        ingredients: ["Aqua", "Glycerin", "Aloe Vera", "Vitamin E", "Shea Butter", "Sunflower Oil"],
+        additives: [],
+        nutrition: null,
         analysis: {
           riskLevel: "low",
           warnings: [],
-          goodIngredients: ["Aloe Vera", "Vitamin E"],
-          badIngredients: []
+          goodIngredients: ["Aloe Vera", "Vitamin E", "Shea Butter"],
+          badIngredients: [],
+          nutriScore: "A",
+          novaScore: 1,
+          foodScore: 95
         }
       },
       {
@@ -99,12 +106,45 @@ export class MemStorage implements IStorage {
         name: "Ultra Clean Shampoo",
         brand: "HairCare",
         category: "Cosmetics",
-        ingredients: ["Aqua", "Sodium Laureth Sulfate", "Parfum", "Parabens"],
+        size: "350ml",
+        imageUrl: "https://images.unsplash.com/photo-1594761340686-b206936f80cb?q=80&w=2902&auto=format&fit=crop&ixlib=rb-4.0.3",
+        ingredients: ["Aqua", "Sodium Laureth Sulfate", "Parfum", "Parabens", "Cocamidopropyl Betaine"],
+        additives: ["E218", "E219"],
+        nutrition: null,
         analysis: {
           riskLevel: "medium",
-          warnings: ["Contains Sulfates", "Contains Parabens"],
+          warnings: ["Contains Sulfates", "Contains Parabens", "Contains additive E218", "Contains additive E219"],
           goodIngredients: [],
-          badIngredients: ["Sodium Laureth Sulfate", "Parabens"]
+          badIngredients: ["Sodium Laureth Sulfate", "Parabens"],
+          nutriScore: "C",
+          novaScore: 3,
+          foodScore: 50
+        }
+      },
+      {
+        barcode: "5449000000996",
+        name: "Coca-Cola Classic",
+        brand: "Coca-Cola",
+        category: "Beverages",
+        size: "330ml",
+        imageUrl: "https://images.openfoodfacts.org/images/products/544/900/000/0996/front_en.348.400.jpg",
+        ingredients: ["Carbonated Water", "High Fructose Corn Syrup", "Caramel Color", "Phosphoric Acid", "Natural Flavors", "Caffeine"],
+        additives: ["E150d", "E338"],
+        nutrition: {
+          calories: 139,
+          carbohydrates: 35,
+          sugar: 35,
+          salt: 0,
+          sodium: 0.02
+        },
+        analysis: {
+          riskLevel: "high",
+          warnings: ["High sugar content", "Contains additive E150d", "Contains additive E338", "Contains caffeine"],
+          goodIngredients: [],
+          badIngredients: ["High Fructose Corn Syrup", "Phosphoric Acid"],
+          nutriScore: "E",
+          novaScore: 4,
+          foodScore: 10
         }
       }
     ];
