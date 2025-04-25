@@ -31,6 +31,14 @@ export default function MockScanner({ onScan }: MockScannerProps) {
 
   const checkCameraAvailability = async () => {
     try {
+      // First, request camera access with a preference for the environment-facing camera
+      // This helps ensure permissions are granted and also sets up the rear camera for smartphones
+      await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' }
+        }
+      });
+      
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter(device => device.kind === 'videoinput');
       setHasCamera(videoDevices.length > 0);
@@ -57,7 +65,26 @@ export default function MockScanner({ onScan }: MockScannerProps) {
         throw new Error('No camera devices found');
       }
 
-      const selectedDeviceId = videoInputDevices[0].deviceId;
+      // Find the rear camera (environment-facing camera)
+      // Most mobile devices have the rear camera listed after the front camera
+      // On newer phones, it often contains "environment" in the label
+      let selectedDeviceId = videoInputDevices[0].deviceId;
+      
+      // Try to find a rear-facing camera by label
+      const rearCamera = videoInputDevices.find(device => 
+        device.label.toLowerCase().includes('back') || 
+        device.label.toLowerCase().includes('rear') || 
+        device.label.toLowerCase().includes('environment')
+      );
+      
+      // If found a rear camera by label, use it
+      if (rearCamera) {
+        selectedDeviceId = rearCamera.deviceId;
+      } 
+      // If we have more than one camera and couldn't find by label, use the last one as it's often the rear camera
+      else if (videoInputDevices.length > 1) {
+        selectedDeviceId = videoInputDevices[videoInputDevices.length - 1].deviceId;
+      }
 
       await codeReader.current.decodeFromVideoDevice(
         selectedDeviceId,
@@ -78,7 +105,11 @@ export default function MockScanner({ onScan }: MockScannerProps) {
               
               const openFoodFactsProduct = await searchProductByBarcode(barcode);
               if (openFoodFactsProduct) {
-                await apiRequest('POST', '/api/products', openFoodFactsProduct);
+                await apiRequest({
+                  url: '/api/products',
+                  method: 'POST',
+                  data: openFoodFactsProduct
+                });
                 onScan(barcode);
               } else {
                 toast({
