@@ -38,8 +38,8 @@ function RouterComponent({ isAuthenticated }: { isAuthenticated: boolean }) {
   // Check the current location and redirect if needed
   useEffect(() => {
     const path = window.location.pathname;
-    if (!isAuthenticated && !publicRoutes.includes(path) && path !== '/') {
-      // Don't redirect from the root path to avoid infinite loops during initial load
+    if (!isAuthenticated && !publicRoutes.includes(path)) {
+      // Redirect to login for all protected routes
       window.location.href = '/login';
     }
   }, [isAuthenticated]);
@@ -68,9 +68,9 @@ function RouterComponent({ isAuthenticated }: { isAuthenticated: boolean }) {
 }
 
 function App() {
-  // For demo purposes, we'll default to authenticated
+  // For demo purposes, initially set to not authenticated so we can test login
   // In a real app, this would check session storage or tokens
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const login = () => setIsAuthenticated(true);
   const logout = () => setIsAuthenticated(false);

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon, LogInIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "../App";
 
 // Custom Google icon to match design
 function GoogleIcon() {
@@ -27,6 +28,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const loginMutation = useMutation({
     mutationFn: (credentials: { email: string; password: string }) => 
@@ -36,6 +38,8 @@ export default function Login() {
         data: credentials
       }),
     onSuccess: () => {
+      // Call the login function from AuthContext to update authentication state
+      login();
       setLocation('/scan');
     },
     onError: (error: any) => {
