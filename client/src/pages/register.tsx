@@ -36,7 +36,7 @@ export default function Register() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <img src="/logo.png" alt="NutriTruth" className="h-12 mx-auto mb-2" />
+          <img src="/logo.png" alt="NutriTruth" className="h-16 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome To NutriTruth</h1>
           <p className="text-gray-600">Find products that aligns with your dietary and health needs</p>
         </div>
