@@ -24,31 +24,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/10 z-50">
           <div className="flex items-center justify-around h-16">
             <Link href="/scan">
-              <a className={`flex flex-col items-center ${isActive("/scan") ? "text-primary" : "text-white/60"} transition-colors`}>
+              <div className={`flex flex-col items-center ${isActive("/scan") ? "text-primary" : "text-white/60"} transition-colors cursor-pointer`}>
                 <ScanIcon className="w-6 h-6" />
                 <span className="text-xs mt-1">Scan</span>
-              </a>
+              </div>
             </Link>
             
             <Link href="/home">
-              <a className={`flex flex-col items-center ${isActive("/home") ? "text-primary" : "text-white/60"} transition-colors`}>
+              <div className={`flex flex-col items-center ${isActive("/home") ? "text-primary" : "text-white/60"} transition-colors cursor-pointer`}>
                 <HomeIcon className="w-6 h-6" />
                 <span className="text-xs mt-1">Home</span>
-              </a>
+              </div>
             </Link>
             
             <Link href="/history">
-              <a className={`flex flex-col items-center ${isActive("/history") ? "text-primary" : "text-white/60"} transition-colors`}>
+              <div className={`flex flex-col items-center ${isActive("/history") ? "text-primary" : "text-white/60"} transition-colors cursor-pointer`}>
                 <HistoryIcon className="w-6 h-6" />
                 <span className="text-xs mt-1">History</span>
-              </a>
+              </div>
             </Link>
             
             <Link href="/settings">
-              <a className={`flex flex-col items-center ${isActive("/settings") ? "text-primary" : "text-white/60"} transition-colors`}>
+              <div className={`flex flex-col items-center ${isActive("/settings") ? "text-primary" : "text-white/60"} transition-colors cursor-pointer`}>
                 <SettingsIcon className="w-6 h-6" />
                 <span className="text-xs mt-1">Settings</span>
-              </a>
+              </div>
             </Link>
           </div>
         </nav>

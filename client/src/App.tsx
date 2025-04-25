@@ -1,4 +1,5 @@
-import { Switch, Route, useLocation } from "wouter";
+import React, { useState, useEffect } from 'react';
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -13,8 +14,8 @@ import Register from "@/pages/register";
 import History from "@/pages/history";
 import Settings from "@/pages/settings";
 import About from "@/pages/about";
-import React, { useState, useEffect } from 'react';
 import { LogoAnimation } from './components/logo-animation';
+import { ChatBot } from './components/chat-bot';
 
 // Simple auth context to manage authentication state
 const AuthContext = React.createContext<{
@@ -29,21 +30,19 @@ const AuthContext = React.createContext<{
 
 export const useAuth = () => React.useContext(AuthContext);
 
-function Router() {
-  const [location] = useLocation();
-  const { isAuthenticated } = useAuth();
-
+// Router component separated to fix hook call issues
+function RouterComponent({ isAuthenticated }: { isAuthenticated: boolean }) {
   // Public routes that don't require authentication
   const publicRoutes = ['/login', '/register'];
-  const isPublicRoute = publicRoutes.includes(location);
-
-  // If user is not authenticated and tries to access a protected route, redirect to login
+  
+  // Check the current location and redirect if needed
   useEffect(() => {
-    if (!isAuthenticated && !isPublicRoute && location !== '/') {
+    const path = window.location.pathname;
+    if (!isAuthenticated && !publicRoutes.includes(path) && path !== '/') {
       // Don't redirect from the root path to avoid infinite loops during initial load
       window.location.href = '/login';
     }
-  }, [isAuthenticated, isPublicRoute, location]);
+  }, [isAuthenticated]);
 
   return (
     <Layout>
@@ -68,8 +67,6 @@ function Router() {
   );
 }
 
-import { ChatBot } from './components/chat-bot';
-
 function App() {
   // For demo purposes, we'll default to authenticated
   // In a real app, this would check session storage or tokens
@@ -82,7 +79,7 @@ function App() {
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       <QueryClientProvider client={queryClient}>
         <LogoAnimation /> {/* Placeholder for logo animation */}
-        <Router />
+        <RouterComponent isAuthenticated={isAuthenticated} />
         <Toaster />
       </QueryClientProvider>
       <ChatBot />
