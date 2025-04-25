@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { EyeIcon, EyeOffIcon, UserPlusIcon, GoogleIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, UserPlusIcon } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -31,7 +31,8 @@ export default function Register() {
 
   const registerMutation = useMutation({
     mutationFn: (userData: { username: string; password: string }) => 
-      apiRequest('/api/users', {
+      apiRequest({
+        url: '/api/users',
         method: 'POST',
         data: userData
       }),

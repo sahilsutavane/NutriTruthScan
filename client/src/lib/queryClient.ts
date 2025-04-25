@@ -7,11 +7,29 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Updated apiRequest to support both string and object parameters
 export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined,
+  urlOrConfig: string | { url: string; method?: string; data?: any },
+  options?: { method?: string; data?: any }
 ): Promise<Response> {
+  let url: string;
+  let method: string = 'GET';
+  let data: any = undefined;
+
+  // Handle string or object parameter
+  if (typeof urlOrConfig === 'string') {
+    url = urlOrConfig;
+    if (options) {
+      method = options.method || 'GET';
+      data = options.data;
+    }
+  } else {
+    // Handle object parameter
+    url = urlOrConfig.url;
+    method = urlOrConfig.method || 'GET';
+    data = urlOrConfig.data;
+  }
+
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
